@@ -1,6 +1,7 @@
 ---
 name: httpd
-packages: []
+packages: 
+  - apache2
 templates:
   bin/httpd_ctl: bin/httpd_ctl
   bin/monit_debugger: bin/monit_debugger
