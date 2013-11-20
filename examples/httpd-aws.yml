@@ -1,0 +1,64 @@
+---
+name: httpd
+director_uuid: f79fe6ac-c175-4109-b361-924731d924af
+
+release:
+  name: static-syte
+  version: latest
+
+compilation:
+  workers: 2
+  network: default
+  reuse_compilation_vms: true
+  cloud_properties:
+    instance_type: m1.small
+
+update:
+  canaries: 1
+  canary_watch_time: 30000
+  update_watch_time: 30000
+  max_in_flight: 4
+  max_errors: 1
+
+networks:
+- name: default
+  type: dynamic
+  cloud_properties:
+    security_groups:
+    - bosh-gaston
+
+- name: vip_network
+  type: vip
+  cloud_properties:
+    security_groups:
+    - bosh-gaston
+
+resource_pools:
+- name: common
+  network: default
+  size: 1
+  stemcell:
+    name: bosh-aws-xen-ubuntu
+    version: 1345
+  cloud_properties:
+    instance_type: m1.small
+
+jobs:
+- name: httpd
+  template: httpd
+  instances: 1
+  resource_pool: common
+  networks:
+  - name: default
+    default:
+    - dns
+    - gateway
+
+properties:
+
+  aws:
+    access_key_id: 
+    secret_access_key: 
+    default_key_name: bosh-gaston
+    region: us-east-1
+    default_security_groups: ["bosh-gaston"] 
